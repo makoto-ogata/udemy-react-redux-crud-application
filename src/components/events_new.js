@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { Link } from 'react-router-dom';
 import { postEvent } from '../actions';
-import handleSubmit from "redux-form/lib/handleSubmit";
 
 
 class EventsNew extends Component{

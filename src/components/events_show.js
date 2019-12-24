@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { Link } from 'react-router-dom';
 import { getEvent, deleteEvent, putEvent } from '../actions';
-import handleSubmit from "redux-form/lib/handleSubmit";
 
 
 class EventsShow extends Component{
@@ -12,6 +11,12 @@ class EventsShow extends Component{
     this.onSubmit = this.onSubmit.bind(this);
     this.onDeleteClick = this.onDeleteClick.bind(this);
   }
+
+  componentDidMount() {
+    const { id } = this.props.match.params;
+    if(id) this.props.getEvent(id);
+  }
+
   renderField(field){
     const { input, label, type, meta: { touched, error }} = field;
 
@@ -55,12 +60,17 @@ class EventsShow extends Component{
 }
 
 const validate = values => {
-  const errors = {}
+  const errors = {};
   if(!values.title) errors.title = "Enter a title, please.";
   if(!values.body) errors.body = "Enter a body, please.";
   return errors
 }
 
-const mapDispatchToProps =  ({ deleteEvent })
+const mapStateToProps = (state, ownProps) => {
+  const event = state.events[ownProps.match.params.id];
+  return { initialValue: event, event}
+}
 
-export default connect(null, mapDispatchToProps)(reduxForm({validate, form: 'eventNewForm'})(EventsShow));
+const mapDispatchToProps =  ({ deleteEvent, getEvent })
+
+export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({validate, form: 'eventShowForm', enableReinitialize: true })(EventsShow));
